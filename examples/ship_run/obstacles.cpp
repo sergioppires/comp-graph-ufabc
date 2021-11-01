@@ -104,7 +104,6 @@ void Obstacles::update(Ship &ship, const GameData &gameData, float deltaTime,
       m_obstaclesTimer.restart();
 
       glm::vec2 forward{glm::rotate(glm::vec2{0.0f, 1.0f}, 4.712f)};
-      glm::vec2 right{glm::rotate(glm::vec2{1.0f, 0.0f}, ship.getRotation())};
       auto Speed{2.0f};
 
       std::uniform_real_distribution<float> rd1(-1.0f, 1.0f);
