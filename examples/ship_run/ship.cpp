@@ -167,9 +167,9 @@ void Ship::update(const GameData &gameData, float deltaTime) {
 
     // Aceleração
     if (gameData.m_input[static_cast<size_t>(Input::Up)]) {
-      m_gravity = 5;
+      m_gravity = 50;
     } else {
-      m_gravity = -5;
+      m_gravity = -50;
     }
   }
 }
