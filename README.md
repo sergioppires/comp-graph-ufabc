@@ -1,4 +1,7 @@
 # Computação Gráfica - UFABC
+## Nome: Sérgio Abilio | RA: 11009513
+
+----
 
 ## Atividade 1 - Jogo: Dogdge Ship
 
