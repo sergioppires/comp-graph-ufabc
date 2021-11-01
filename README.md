@@ -17,6 +17,12 @@ Pressione o botão esquerdo do seu mouse ou a barra de espaço para subir. Desvi
 <b>Progressão</b>: Quanto mais o tempo passa, maior sua pontuação e mais dificil fica o desafio. Quanto maior o level do seu jogo, mais rápido os obstáculos vão aparecer.
 
 
+### Erros Conhecidos
+
+<b>EMSDK:</b> Não consegui compliar o projeto para webassembly, ocorreu o erro seguinte:
+
+![error.png](./assets/error.PNG)
+
 
 
 # Sobre o ABCg
