@@ -68,7 +68,7 @@ void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
 
   m_score = 0;
-  m_levelTimer.restart();
+  m_levelTimer = 0;
 
   m_ship.initializeGL(m_objectsProgram);
   m_obstacles.initializeGL(m_objectsProgram);
@@ -87,13 +87,13 @@ void OpenGLWindow::update() {
   if (m_elapsedTimer.elapsed() >= 1.0) {
     if (m_gameData.m_state == State::Playing) {
       m_score += 1 * m_level;
+      m_levelTimer = m_levelTimer + 1;
 
-      if (m_levelTimer.elapsed() > 5.0 || m_levelTimer.elapsed() <= 10.0) {
+      if (m_levelTimer > 5.0 && m_levelTimer <= 10.0) {
         m_level = 2;
-      } else if (m_levelTimer.elapsed() > 10.0 ||
-                 m_levelTimer.elapsed() <= 15.0) {
+      } else if (m_levelTimer > 10.0 && m_levelTimer <= 15.0) {
         m_level = 3;
-      } else if (m_levelTimer.elapsed() > 15.0) {
+      } else if (m_levelTimer > 15.0) {
         m_level = 4;
       } else {
         m_level = 1;
@@ -142,7 +142,7 @@ void OpenGLWindow::paintUI() {
       ImGui::Spacing();
       ImGui::SetCursorPosX(size.x / 2);
       ImGui::Text("Level: %d", m_level);
-      ImGui::PushFont(m_font);
+      
     }
 
     if (m_gameData.m_state == State::GameOver) {
@@ -151,6 +151,7 @@ void OpenGLWindow::paintUI() {
       ImGui::Text("Game Over!");
     }
 
+    ImGui::PushFont(m_font);
     ImGui::PopFont();
     ImGui::End();
   }

@@ -36,8 +36,8 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   std::default_random_engine m_randomEngine;
 
   abcg::ElapsedTimer m_elapsedTimer;
-  abcg::ElapsedTimer m_levelTimer;
 
+  int m_levelTimer{0};
   int m_score{0};
   int m_level{1};
 
