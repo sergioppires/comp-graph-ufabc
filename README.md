@@ -5,6 +5,8 @@
 
 ## Atividade 1 - Jogo: Dogdge Ship
 
+[Jogo em WebAssembly](https://sergioppires.github.io/comp-graph-ufabc/apps/ship_run/index.html)
+
 ### Resumo
 Você deve escapar as naves triangulares do mal pelo meior tempo possível. Quanto mais tempo você desviar, maior será sua pontuação.
 
