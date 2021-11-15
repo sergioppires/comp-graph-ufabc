@@ -36,7 +36,7 @@ void OpenGLWindow::initializeGL() {
                                     getAssetsPath() + "depth.frag");
 
   // Load model
-  m_model.loadFromFile(getAssetsPath() + "teapot.obj");
+  m_model.loadFromFile(getAssetsPath() + "cogumelo.obj");
 
   m_model.setupVAO(m_program);
 
@@ -65,7 +65,7 @@ void OpenGLWindow::paintGL() {
 
   // Set uniform variables of the current object
   glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_modelMatrix[0][0]);
-  glUniform4f(colorLoc, red, blue, green, alpha);  // Color changers
+  glUniform4f(colorLoc, red, blue, green, alpha);
 
   m_model.render(m_trianglesToDraw);
 
@@ -75,14 +75,23 @@ void OpenGLWindow::paintGL() {
 void OpenGLWindow::paintUI() {
   abcg::OpenGLWindow::paintUI();
 
-  // Create window for slider
+  // Create a window for the other widgets
   {
-    const auto widgetSize{ImVec2(250, 120)};
+    auto widgetSize{ImVec2(250, 180)};
     ImGui::SetNextWindowPos(ImVec2(m_viewportWidth - widgetSize.x - 5, 5));
     ImGui::SetNextWindowSize(widgetSize);
-    ImGui::Begin("Color change window", nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::Begin("Widget window", nullptr, ImGuiWindowFlags_NoDecoration);
 
-    // Create a slider to control the number of rendered triangles
+    static bool faceCulling{};
+    ImGui::Checkbox("Back-face culling", &faceCulling);
+
+    if (faceCulling) {
+      glEnable(GL_CULL_FACE);
+    } else {
+      glDisable(GL_CULL_FACE);
+    }
+
+        // Create a slider to control the number of rendered triangles
     {
       ImGui::PushItemWidth(165);
       ImGui::SliderFloat("red", &red, 0, 1, "%.2f red");
@@ -91,8 +100,60 @@ void OpenGLWindow::paintUI() {
       ImGui::PopItemWidth();
     }
 
+    // CW/CCW combo box
+    {
+      static std::size_t currentIndex{};
+      std::vector<std::string> comboItems{"CCW", "CW"};
+
+      ImGui::PushItemWidth(120);
+      if (ImGui::BeginCombo("Front face", comboItems.at(currentIndex).c_str())) {
+        for (auto index : iter::range(comboItems.size())) {
+          const bool isSelected{currentIndex == index};
+          if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
+            currentIndex = index;
+          if (isSelected) ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+      }
+      ImGui::PopItemWidth();
+
+      if (currentIndex == 0) {
+        glFrontFace(GL_CCW);
+      } else {
+        glFrontFace(GL_CW);
+      }
+    }
+
+    // Projection combo box
+    {
+      static std::size_t currentIndex{};
+      std::vector<std::string> comboItems{"Perspective", "Orthographic"};
+
+      ImGui::PushItemWidth(120);
+      if (ImGui::BeginCombo("Projection", comboItems.at(currentIndex).c_str())) {
+        for (auto index : iter::range(comboItems.size())) {
+          const bool isSelected{currentIndex == index};
+          if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
+            currentIndex = index;
+          if (isSelected) ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+      }
+      ImGui::PopItemWidth();
+
+      if (currentIndex == 0) {
+        auto aspect{static_cast<float>(m_viewportWidth) /
+                    static_cast<float>(m_viewportHeight)};
+        m_projMatrix =
+            glm::perspective(glm::radians(45.0f), aspect, 0.1f, 5.0f);
+
+      } else {
+        m_projMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 5.0f);
+      }
+    }
     ImGui::End();
   }
+
 }
 
 void OpenGLWindow::resizeGL(int width, int height) {

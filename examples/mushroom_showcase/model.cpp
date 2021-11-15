@@ -3,7 +3,6 @@
 #include <fmt/core.h>
 #include <tiny_obj_loader.h>
 
-
 #include <cppitertools/itertools.hpp>
 #include <filesystem>
 #include <glm/gtx/hash.hpp>
