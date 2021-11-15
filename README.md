@@ -5,7 +5,7 @@
 
 ## Atividade 2 - Aplicação gráfica: Mushroom Dreams
 
-[Jogo em WebAssembly](https://sergioppires.github.io/comp-graph-ufabc/apps/mushroom_dream/index.html)
+[Jogo em WebAssembly](https://sergioppires.github.io/comp-graph-ufabc/apps/mushroom_dream)
 
 ### Resumo
 É uma aplicação demo 3d que possui um cogumelo central e diversos outros cogumelos de fundo findo em direção à camera. Você pode interagir com o objeto central usando seu mouse, assim você pode rotaciona-lo do jeito que quiser. As cores mudam automaticamente, mas você pode desabilitar essa função no widget menu. <b> Recomendamos que a visualização seja feita em fullscreen.</b>
@@ -28,14 +28,11 @@ Use o mouse para interagir com o cogumelo central.
 <b>Créditos:<p> 
 Modelo do cogumelo:</b> https://free3d.com/3d-model/short-strange-mushroom-v1--889995.html
 
-
-
-
 ----
 
 ## Atividade 1 - Jogo: Dogdge Ship
 
-[Jogo em WebAssembly](https://sergioppires.github.io/comp-graph-ufabc/apps/ship_run/index.html)
+[Jogo em WebAssembly](https://sergioppires.github.io/comp-graph-ufabc/apps/ship_run)
 
 ### Resumo
 Você deve escapar as naves triangulares do mal pelo meior tempo possível. Quanto mais tempo você desviar, maior será sua pontuação.
