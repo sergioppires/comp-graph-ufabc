@@ -5,7 +5,6 @@
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
-
 void OpenGLWindow::handleEvent(SDL_Event &event) {
   glm::ivec2 mousePosition;
   SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
@@ -121,18 +120,19 @@ void OpenGLWindow::paintUI() {
 
   // Create a window for the other widgets
   {
-    auto widgetSize{ImVec2(250, 180)};
+    auto widgetSize{ImVec2(250, 190)};
     ImGui::SetNextWindowPos(ImVec2(m_viewportWidth - widgetSize.x - 5, 5));
     ImGui::SetNextWindowSize(widgetSize);
     ImGui::Begin("Widget window", nullptr, ImGuiWindowFlags_NoDecoration);
 
-    static bool faceCulling{};
     ImGui::Checkbox("Back-face culling", &faceCulling);
     if (faceCulling) {
       glEnable(GL_CULL_FACE);
     } else {
       glDisable(GL_CULL_FACE);
     }
+
+    ImGui::Checkbox("Random colors", &randomColor);
 
     // Create a slider to control the number of rendered triangles
     {
@@ -149,7 +149,8 @@ void OpenGLWindow::paintUI() {
       std::vector<std::string> comboItems{"CCW", "CW"};
 
       ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("Front face", comboItems.at(currentIndex).c_str())) {
+      if (ImGui::BeginCombo("Front face",
+                            comboItems.at(currentIndex).c_str())) {
         for (auto index : iter::range(comboItems.size())) {
           const bool isSelected{currentIndex == index};
           if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
@@ -173,8 +174,7 @@ void OpenGLWindow::paintUI() {
       std::vector<std::string> comboItems{"Perspective", "Orthographic"};
 
       ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("Projection",
-                            comboItems.at(currentIndex).c_str())) {
+      if (ImGui::BeginCombo("Projection", comboItems.at(currentIndex).c_str())) {
         for (auto index : iter::range(comboItems.size())) {
           const bool isSelected{currentIndex == index};
           if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
@@ -212,7 +212,6 @@ void OpenGLWindow::update() {
   float background_red = 1.0f - red;
   float background_blue = 1.0f - blue;
   float background_green = 1.0f - green;
-
   glClearColor(background_red, background_green, background_blue, 1);
 
   m_modelMatrix = m_trackBall.getRotation();
@@ -237,6 +236,44 @@ void OpenGLWindow::update() {
     if (position.z > 0.1f) {
       randomizeStar(position, rotation);
       position.z = -10.0f;  // Back to -100
+    }
+  }
+
+  if (randomColor) {
+    if (redGoing) {
+      red = red + 0.1 * deltaTime;
+      if (red >= 1.0f) {
+        redGoing = false;
+      }
+    } else {
+      red = red - 0.1 * deltaTime;
+      if (red <= 0) {
+        redGoing = true;
+      }
+    }
+
+    if (blueGoing) {
+      blue = blue + 0.2 * deltaTime;
+      if (blue >= 1.0f) {
+        blueGoing = false;
+      }
+    } else {
+      blue = blue - 0.2 * deltaTime;
+      if (blue <= 0) {
+        blueGoing = true;
+      }
+    }
+
+    if (greenGoing) {
+      green = green + 0.3 * deltaTime;
+      if (green >= 1.0f) {
+        greenGoing = false;
+      }
+    } else {
+      green = green - 0.3 * deltaTime;
+      if (green <= 0) {
+        greenGoing = true;
+      }
     }
   }
 }

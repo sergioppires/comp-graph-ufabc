@@ -31,10 +31,12 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   TrackBall m_trackBall;
   float m_zoom{};
 
-  float red = 1.0f;
-  float green = 1.0f;
-  float blue = 1.0f;
+  float red = 0.5f;
+  float green = 0.5f;
+  float blue = 0.5f;
   float alpha = 1.0f;
+
+  bool redGoing = false, greenGoing = true, blueGoing = false, randomColor = true, faceCulling = true;
 
   std::array<glm::vec3, m_numStars> m_starPositions;
   std::array<glm::vec3, m_numStars> m_starRotations;
