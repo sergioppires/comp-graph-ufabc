@@ -3,8 +3,10 @@
 #include <imgui.h>
 
 #include <cppitertools/itertools.hpp>
+#include <glm/gtx/fast_trigonometry.hpp>
 
-void OpenGLWindow::handleEvent(SDL_Event& event) {
+
+void OpenGLWindow::handleEvent(SDL_Event &event) {
   glm::ivec2 mousePosition;
   SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
@@ -41,6 +43,31 @@ void OpenGLWindow::initializeGL() {
   m_model.setupVAO(m_program);
 
   m_trianglesToDraw = m_model.getNumTriangles();
+
+  for (const auto index : iter::range(m_numStars)) {
+    auto &position{m_starPositions.at(index)};
+    auto &rotation{m_starRotations.at(index)};
+
+    randomizeStar(position, rotation);
+  }
+}
+
+void OpenGLWindow::randomizeStar(glm::vec3 &position, glm::vec3 &rotation) {
+  // Get random position
+  // x and y coordinates in the range [-20, 20]
+  // z coordinates in the range [-100, 0]
+  std::uniform_real_distribution<float> distPosXY(-2.0f, 2.0f);
+  std::uniform_real_distribution<float> distPosZ(-50.0f, 0.0f);
+
+  position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine),
+                       distPosZ(m_randomEngine));
+
+  //  Get random rotation axis
+  std::uniform_real_distribution<float> distRotAxis(-1.0f, 1.0f);
+
+  rotation = glm::normalize(glm::vec3(distRotAxis(m_randomEngine),
+                                      distRotAxis(m_randomEngine),
+                                      distRotAxis(m_randomEngine)));
 }
 
 void OpenGLWindow::paintGL() {
@@ -69,6 +96,23 @@ void OpenGLWindow::paintGL() {
 
   m_model.render(m_trianglesToDraw);
 
+  // Render each star
+  for (const auto index : iter::range(m_numStars)) {
+    const auto &position{m_starPositions.at(index)};
+    const auto &rotation{m_starRotations.at(index)};
+
+    // Compute model matrix of the current star
+    glm::mat4 modelMatrix{1.0f};
+    modelMatrix = glm::translate(modelMatrix, position);
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+    modelMatrix = glm::rotate(modelMatrix, m_angle, rotation);
+
+    // Set uniform variable
+    abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &modelMatrix[0][0]);
+
+    m_model.render();
+  }
+
   glUseProgram(0);
 }
 
@@ -84,14 +128,13 @@ void OpenGLWindow::paintUI() {
 
     static bool faceCulling{};
     ImGui::Checkbox("Back-face culling", &faceCulling);
-
     if (faceCulling) {
       glEnable(GL_CULL_FACE);
     } else {
       glDisable(GL_CULL_FACE);
     }
 
-        // Create a slider to control the number of rendered triangles
+    // Create a slider to control the number of rendered triangles
     {
       ImGui::PushItemWidth(165);
       ImGui::SliderFloat("red", &red, 0, 1, "%.2f red");
@@ -130,7 +173,8 @@ void OpenGLWindow::paintUI() {
       std::vector<std::string> comboItems{"Perspective", "Orthographic"};
 
       ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("Projection", comboItems.at(currentIndex).c_str())) {
+      if (ImGui::BeginCombo("Projection",
+                            comboItems.at(currentIndex).c_str())) {
         for (auto index : iter::range(comboItems.size())) {
           const bool isSelected{currentIndex == index};
           if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
@@ -153,7 +197,6 @@ void OpenGLWindow::paintUI() {
     }
     ImGui::End();
   }
-
 }
 
 void OpenGLWindow::resizeGL(int width, int height) {
@@ -177,4 +220,23 @@ void OpenGLWindow::update() {
   m_viewMatrix =
       glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f + m_zoom),
                   glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+  const float deltaTime{static_cast<float>(getDeltaTime())};
+  m_angle = glm::wrapAngle(m_angle + glm::radians(90.0f) * deltaTime);
+
+  // Update stars
+  for (const auto index : iter::range(m_numStars)) {
+    auto &position{m_starPositions.at(index)};
+    auto &rotation{m_starRotations.at(index)};
+
+    // Z coordinate increases by 10 units per second
+    position.z += deltaTime * 1.0f;
+
+    // If this star is behind the camera, select a new random position and
+    // orientation, and move it back to -100
+    if (position.z > 0.1f) {
+      randomizeStar(position, rotation);
+      position.z = -10.0f;  // Back to -100
+    }
+  }
 }
