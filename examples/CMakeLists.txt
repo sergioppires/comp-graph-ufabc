@@ -1,1 +1,1 @@
-add_subdirectory(ship_run)
+add_subdirectory(object_showcase)
