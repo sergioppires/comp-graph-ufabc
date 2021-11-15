@@ -4,8 +4,11 @@
 ----
 
 ## Atividade 2 - Aplicação gráfica: Mushroom Dreams
+:mushroom:
 
-[Jogo em WebAssembly](https://sergioppires.github.io/comp-graph-ufabc/apps/mushroom_dream)
+![](assets/atividade2.gif)
+
+[<h2>Jogo em WebAssembly</h2>](https://sergioppires.github.io/comp-graph-ufabc/apps/mushroom_dream)
 
 ### Resumo
 É uma aplicação demo 3d que possui um cogumelo central e diversos outros cogumelos de fundo findo em direção à camera. Você pode interagir com o objeto central usando seu mouse, assim você pode rotaciona-lo do jeito que quiser. As cores mudam automaticamente, mas você pode desabilitar essa função no widget menu. <b> Recomendamos que a visualização seja feita em fullscreen.</b>
@@ -15,17 +18,19 @@ Use o mouse para interagir com o cogumelo central.
 
 ### Implementações
 
-<b>Cogumelo Central</b>: É o personagem principal da aplicação.
+><b>Cogumelo Central</b>: É o personagem principal da aplicação. Nele foi aplicado o efeito de [trackball](https://hbatagelo.github.io/cg/vtrackball1.html) dado em aula. Esse efeito consiste em alterar a rotação do objeto de acordo com os cliques do mouse. Também é possível utilizar o scroll para fazer com que a cãmera fique mais perto do objeto ou mais longe.
 
-<b>Efeito starfield</b>: O efeito starfield foi feito com base no [efeito dado em aula](https://hbatagelo.github.io/cg/starfield.html). Esse efeito cria diversos objetos com uma escala menor que vem de encontro ao observador/camera. Quando os objetos passam um pouco a posição da câmera, eles são transladados até o começo do campo, gerando uma impressão de infinito.
+><b>Efeito starfield</b>: O efeito starfield foi feito com base no [efeito dado em aula](https://hbatagelo.github.io/cg/starfield.html). Esse efeito cria diversos objetos com uma escala menor que vem de encontro ao observador/camera. Quando os objetos passam um pouco a posição da câmera, eles são transladados até o começo do campo, gerando uma impressão de que estamos gerando infinitos cogumelos. Porém apenas alocamos 500 objetos na memória e atualizamos sua posição de acordo com a necessidade.
 
-<b>Efeito de cores</b>: As cores do background e dos cogumelos são opostas no circulo cromático, ou seja, são complementares. Esse efeito de cor gera um efeito psicodélico na aplicação.
+><b>Efeito de cores</b>: As cores do background e dos cogumelos são opostas no circulo cromático, ou seja, são complementares. Esse efeito de cor gera um efeito psicodélico na aplicação. As cores são definidas na estrutura do RGB. As variaveis red, green e blue aceitam valores em formato de float entre 0 e 1 e são definidos no openglwindow.hpp. De acordo com a variação dessas cores variamos a cor do material aplicado no cogumelo, passando uma impressão de colorização. Para as cores do background utilizamos a cor complementar que é dada pela fórmula (corBackground = 1- corCogumelo) para o vermelho, verde e azul.
 
-<b>Cores aleatórias</b>: As cores são aleatoriezadas com o tempo para deixar a aplicação mais interessante. Também é possível desabilitar essa feature afim de fazer o manejo das cores manualmente.
+><b>Cores aleatórias</b>: As cores são aleatoriezadas com o tempo para deixar a aplicação mais interessante. Também é possível desabilitar essa feature afim de fazer o manejo das cores manualmente. Usamos essa implementação a partir da variação dos valores das cores red green e blue no openglwindow.
 
-<b>Face Culling</b>: Seguindo os exemplos dado em aula, por padrão, não renderizamos a parte interna dos cogumelos. Mas você pode alterar essa opção no widget menu.
+><b>Face Culling</b>: Seguindo os exemplos dado em aula, por padrão, não renderizamos a parte interna dos cogumelos. Mas você pode alterar essa opção no widget menu.
 
-<b>Créditos:<p> 
+><b>Perspectiva</b>: Por padrão, nossos efeitos necessitam de perspectiva para fazerem sentido, pois estamos trabalhando com um conceito de profudindidade de visão. Existe a aopção de visão ortogonal apenas para fins didáticos, uma vez que a ilusão que criamos não funciona da maneira que desejamos nesse tipo de perspectiva.
+
+><b>Créditos:<p> 
 Modelo do cogumelo:</b> https://free3d.com/3d-model/short-strange-mushroom-v1--889995.html
 
 ----
