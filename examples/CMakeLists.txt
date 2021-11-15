@@ -1,1 +1,1 @@
-add_subdirectory(object_showcase)
+add_subdirectory(mushroom_showcase)

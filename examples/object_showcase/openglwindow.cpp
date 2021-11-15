@@ -35,7 +35,7 @@ void OpenGLWindow::initializeGL() {
                                     getAssetsPath() + "loadmodel.frag");
 
   // Load model
-  loadModelFromFile(getAssetsPath() + "teapot.obj");
+  loadModelFromFile(getAssetsPath() + "cogumelo.obj");
   standardize();
 
   m_verticesToDraw = m_indices.size();

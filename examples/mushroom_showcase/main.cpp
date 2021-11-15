@@ -4,18 +4,17 @@
 #include "openglwindow.hpp"
 
 int main(int argc, char **argv) {
-//https://free3d.com/3d-model/bugatti-chiron-2017-model-31847.html 
-
   try {
     abcg::Application app(argc, argv);
 
     auto window{std::make_unique<OpenGLWindow>()};
     window->setOpenGLSettings({.samples = 4});
     window->setWindowSettings(
-        {.width = 600, .height = 600, .title = "Object Showcase"});
+        {.width = 600, .height = 600, .title = "Mushroom Showcase"});
 
     app.run(std::move(window));
-  } catch (const abcg::Exception &exception) {
+    
+  } catch (abcg::Exception &exception) {
     fmt::print(stderr, "{}\n", exception.what());
     return -1;
   }
