@@ -76,7 +76,7 @@ void OpenGLWindow::loadMushroom(std::string_view path) {
   m_mushroom.terminateGL();
 
   m_mushroom.loadDiffuseTexture(getAssetsPath() + "maps/mushroom.jpg");
-  
+
   m_mushroom.loadObj(path);
   m_mushroom.setupVAO(m_programs.at(m_currentProgramIndex));
   m_trianglesToDrawMushroom = m_mushroom.getNumTriangles();
@@ -147,19 +147,6 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
 
   m_model.render(m_trianglesToDraw);
-  
-/*
-  glm::mat4 mushroom{1.0f};
-  mushroom = glm::translate(mushroom, glm::vec3(1.0f, 1.0f, 1.0f));
-  mushroom = glm::rotate(mushroom, glm::radians(0.0f), glm::vec3(1, 1, 1));
-  mushroom = glm::scale(mushroom, glm::vec3(1.0f));
-*/
-
-  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_mushroomMatrix[0][0]);
-  glUniform1f(shininessLoc, m_shininessMushroom);
-  glUniform4fv(KaLoc, 1, &m_KaMushroom.x);
-  glUniform4fv(KdLoc, 1, &m_KdMushroom.x);
-  glUniform4fv(KsLoc, 1, &m_KsMushroom.x);
   m_mushroom.render(m_trianglesToDrawMushroom);
 
   abcg::glUseProgram(0);

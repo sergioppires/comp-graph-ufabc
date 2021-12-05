@@ -18,7 +18,7 @@ class Camera {
  private:
   friend OpenGLWindow;
 
-  glm::vec3 m_eye{glm::vec3(0.0f, 0.02f, 2.5f)};
+  glm::vec3 m_eye{glm::vec3(0.0f, 0.1f, 2.5f)};
   glm::vec3 m_at{glm::vec3(0.0f, 0.02f, 0.0f)};
   glm::vec3 m_up{glm::vec3(0.0f, 1.0f, 0.0f)};
 
