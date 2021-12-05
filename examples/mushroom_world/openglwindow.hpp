@@ -19,7 +19,9 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   int m_viewportHeight{};
 
   Model m_model;
+  Model m_mushroom;
   int m_trianglesToDraw{};
+  int m_trianglesToDrawMushroom{};
 
   float m_zoom{};
 
@@ -29,6 +31,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   float m_panSpeed{0.0f};
 
   glm::mat4 m_modelMatrix{1.0f};
+  glm::mat4 m_mushroomMatrix{1.0f};
   glm::mat4 m_viewMatrix{1.0f};
   glm::mat4 m_projMatrix{1.0f};
 
@@ -53,7 +56,13 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   glm::vec4 m_Ks{};
   float m_shininess{};
 
+  glm::vec4 m_KaMushroom{};
+  glm::vec4 m_KdMushroom{};
+  glm::vec4 m_KsMushroom{};
+  float m_shininessMushroom{};
+
   void loadModel(std::string_view path);
+  void loadMushroom(std::string_view path);
   void update();
 };
 

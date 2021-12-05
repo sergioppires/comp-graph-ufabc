@@ -51,18 +51,16 @@ void OpenGLWindow::initializeGL() {
   }
 
   // Load default model
-  loadModel(getAssetsPath() + "mushroom_world.obj");
+  loadModel(getAssetsPath() + "chao.obj");
+  loadMushroom(getAssetsPath() + "new_mushroom.obj");
   m_mappingMode = 3;  // "From mesh" option
 }
 
 void OpenGLWindow::loadModel(std::string_view path) {
   m_model.terminateGL();
 
-  // m_model.loadDiffuseTexture(getAssetsPath() + "maps/grass.jpg");
-  // m_model.loadDiffuseTexture(getAssetsPath() + "maps/mushroom.jpg");
+  m_model.loadDiffuseTexture(getAssetsPath() + "maps/grass.jpg");
 
-  // m_model.loadNormalTexture(getAssetsPath() + "maps/grass.jpg");
-  // m_model.loadNormalTexture(getAssetsPath() + "maps/mushroom.jpg");
   m_model.loadObj(path);
   m_model.setupVAO(m_programs.at(m_currentProgramIndex));
   m_trianglesToDraw = m_model.getNumTriangles();
@@ -72,6 +70,22 @@ void OpenGLWindow::loadModel(std::string_view path) {
   m_Kd = m_model.getKd();
   m_Ks = m_model.getKs();
   m_shininess = m_model.getShininess();
+}
+
+void OpenGLWindow::loadMushroom(std::string_view path) {
+  m_mushroom.terminateGL();
+
+  m_mushroom.loadDiffuseTexture(getAssetsPath() + "maps/mushroom.jpg");
+  
+  m_mushroom.loadObj(path);
+  m_mushroom.setupVAO(m_programs.at(m_currentProgramIndex));
+  m_trianglesToDrawMushroom = m_mushroom.getNumTriangles();
+
+  // Use material properties from the loaded model
+  m_Ka = m_mushroom.getKa();
+  m_Kd = m_mushroom.getKd();
+  m_Ks = m_mushroom.getKs();
+  m_shininess = m_mushroom.getShininess();
 }
 
 void OpenGLWindow::paintGL() {
@@ -133,6 +147,20 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
 
   m_model.render(m_trianglesToDraw);
+  
+/*
+  glm::mat4 mushroom{1.0f};
+  mushroom = glm::translate(mushroom, glm::vec3(1.0f, 1.0f, 1.0f));
+  mushroom = glm::rotate(mushroom, glm::radians(0.0f), glm::vec3(1, 1, 1));
+  mushroom = glm::scale(mushroom, glm::vec3(1.0f));
+*/
+
+  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_mushroomMatrix[0][0]);
+  glUniform1f(shininessLoc, m_shininessMushroom);
+  glUniform4fv(KaLoc, 1, &m_KaMushroom.x);
+  glUniform4fv(KdLoc, 1, &m_KdMushroom.x);
+  glUniform4fv(KsLoc, 1, &m_KsMushroom.x);
+  m_mushroom.render(m_trianglesToDrawMushroom);
 
   abcg::glUseProgram(0);
 }
@@ -198,7 +226,6 @@ void OpenGLWindow::paintUI() {
       }
       if (loadModel) fileDialogModel.Open();
       if (loadDiffMap) fileDialogDiffuseMap.Open();
-      if (loadNormalMap) fileDialogNormalMap.Open();
     }
 
     // Slider will be stretched horizontally
@@ -380,7 +407,6 @@ void OpenGLWindow::paintUI() {
 
   fileDialogNormalMap.Display();
   if (fileDialogNormalMap.HasSelected()) {
-    m_model.loadNormalTexture(fileDialogNormalMap.GetSelected().string());
     fileDialogNormalMap.ClearSelected();
   }
 }
@@ -394,6 +420,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
 
 void OpenGLWindow::terminateGL() {
   m_model.terminateGL();
+  m_mushroom.terminateGL();
   for (const auto& program : m_programs) {
     abcg::glDeleteProgram(program);
   }
