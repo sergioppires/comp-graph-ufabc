@@ -1,6 +1,8 @@
 #ifndef OPENGLWINDOW_HPP_
 #define OPENGLWINDOW_HPP_
 
+#include <random>
+
 #include "abcg.hpp"
 #include "model.hpp"
 #include "trackball.hpp"
@@ -28,6 +30,13 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   glm::mat4 m_modelMatrix{1.0f};
   glm::mat4 m_viewMatrix{1.0f};
   glm::mat4 m_projMatrix{1.0f};
+
+  std::default_random_engine m_randomEngine;
+  static const int m_numCrabs{100};
+
+  std::array<glm::vec3, m_numCrabs> m_crabsPositions;
+  std::array<glm::vec3, m_numCrabs> m_crabsRotations;
+  float m_angle{};
 
   // Shaders
   std::vector<const char*> m_shaderNames{
@@ -79,6 +88,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   };
   // clang-format on
 
+  void randomizeCrab(glm::vec3 &position, glm::vec3 &rotation);
   void initializeSkybox();
   void renderSkybox();
   void terminateSkybox();

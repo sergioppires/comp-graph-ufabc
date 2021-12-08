@@ -1,6 +1,38 @@
 # Computação Gráfica - UFABC
 ## Nome: Sérgio Abilio | RA: 11009513
 
+## Atividade 3 - Aplicação gráfica Interariva: Crab World
+:crab:
+
+//TODO colocar GIF
+
+[<h2>Jogo em WebAssembly</h2>](https://sergioppires.github.io/comp-graph-ufabc/apps/crab_world)
+
+### Resumo
+É uma aplicação demo 3d interativa que possui um caranguejo com um óculos de sol central e diversos outros caranguejos de fundo. Todos os objetos da cena possuem o efeito "cromado", ou seja, refletem o ambiente. O ambiente é composto por um cubemaps que representa uma praia. Você pode interagir com o objeto central usando seu mouse, assim você pode rotaciona-lo do jeito que quiser.<b> Recomendamos que a visualização seja feita em fullscreen.</b>
+
+### Como interagir?
+Use o mouse para interagir com o caranguejo central.
+
+### Implementações
+
+<b>Caranguejos</b>: É o personagem principal da aplicação. Ele foi feito a partir de uma composição de dois objetos via blender. Para fazer a composição dos objetos, usamos um modelo .OBJ do caranguejo e do óculos. Dentro do software, atualizamos seu eixo de posição, rotações e escalas para que fosse transmitida uma sensação de que ele estava usando o óculos de sol.
+
+//TODO gif do blender
+
+Nele foi aplicado o efeito de [trackball](https://hbatagelo.github.io/cg/vtrackball1.html) dado em aula. Esse efeito consiste em alterar a rotação do objeto de acordo com os cliques do mouse. Também é possível utilizar o scroll para fazer com que a cãmera fique mais perto do objeto ou mais longe.
+
+<b>Efeito starfield</b>: O efeito starfield foi feito com base no [efeito dado em aula](https://hbatagelo.github.io/cg/starfield.html). Esse efeito cria diversos objetos com uma escala menor que vem de encontro ao observador/camera. Quando os objetos passam um pouco a posição da câmera, eles são transladados até o começo do campo, gerando uma impressão de que estamos gerando infinitos caranguejos. Porém apenas alocamos 100 objetos na memória e atualizamos sua posição de acordo com a necessidade.
+
+<b>Textura e Iluminação</b>: O efeito de textura e iluminação espelhados foram feitos com base no modelo dado em aula
+
+<p>
+Créditos: </br>
+Modelo do caranguejo: <a>https://free3d.com/3d-model/crab-baby-happy-v1--224697.html</a> </br>
+Modelo do óculos: <a>https://free3d.com/3d-model/sunglasses-v1--803862.html</a></br>
+Modelo do cubemap: <a>http://www.humus.name/index.php?page=Cubemap&item=NissiBeach</a>
+</br>
+
 ----
 
 ## Atividade 2 - Aplicação gráfica: Mushroom Dreams

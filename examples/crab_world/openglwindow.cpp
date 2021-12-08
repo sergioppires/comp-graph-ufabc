@@ -7,7 +7,7 @@
 
 #include "imfilebrowser.h"
 
-void OpenGLWindow::handleEvent(SDL_Event& event) {
+void OpenGLWindow::handleEvent(SDL_Event &event) {
   glm::ivec2 mousePosition;
   SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
@@ -42,7 +42,7 @@ void OpenGLWindow::initializeGL() {
   abcg::glEnable(GL_DEPTH_TEST);
 
   // Create programs
-  for (const auto& name : m_shaderNames) {
+  for (const auto &name : m_shaderNames) {
     const auto path{getAssetsPath() + "shaders/" + name};
     const auto program{createProgramFromFile(path + ".vert", path + ".frag")};
     m_programs.push_back(program);
@@ -59,6 +59,31 @@ void OpenGLWindow::initializeGL() {
   m_trackBallModel.setVelocity(0.0001f);
 
   initializeSkybox();
+
+  for (const auto index : iter::range(m_numCrabs)) {
+    auto &position{m_crabsPositions.at(index)};
+    auto &rotation{m_crabsRotations.at(index)};
+
+    randomizeCrab(position, rotation);
+  }
+}
+
+void OpenGLWindow::randomizeCrab(glm::vec3 &position, glm::vec3 &rotation) {
+  // Get random position
+  // x and y coordinates in the range [-20, 20]
+  // z coordinates in the range [-100, 0]
+  std::uniform_real_distribution<float> distPosXY(-2.0f, 2.0f);
+  std::uniform_real_distribution<float> distPosZ(-50.0f, 0.0f);
+
+  position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine),
+                       distPosZ(m_randomEngine));
+
+  //  Get random rotation axis
+  std::uniform_real_distribution<float> distRotAxis(-1.0f, 1.0f);
+
+  rotation = glm::normalize(glm::vec3(distRotAxis(m_randomEngine),
+                                      distRotAxis(m_randomEngine),
+                                      distRotAxis(m_randomEngine)));
 }
 
 void OpenGLWindow::initializeSkybox() {
@@ -172,6 +197,23 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
 
   m_model.render(m_trianglesToDraw);
+
+  // Render each crab
+  for (const auto index : iter::range(m_numCrabs)) {
+    const auto &position{m_crabsPositions.at(index)};
+    const auto &rotation{m_crabsRotations.at(index)};
+
+    // Compute model matrix of the current crab
+    glm::mat4 modelMatrix{1.0f};
+    modelMatrix = glm::translate(modelMatrix, position);
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+    modelMatrix = glm::rotate(modelMatrix, m_angle, rotation);
+
+    // Set uniform variable
+    abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &modelMatrix[0][0]);
+
+    m_model.render(m_trianglesToDraw);
+  }
 
   abcg::glUseProgram(0);
 
@@ -469,7 +511,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
 
 void OpenGLWindow::terminateGL() {
   m_model.terminateGL();
-  for (const auto& program : m_programs) {
+  for (const auto &program : m_programs) {
     abcg::glDeleteProgram(program);
   }
   terminateSkybox();
@@ -482,9 +524,27 @@ void OpenGLWindow::terminateSkybox() {
 }
 
 void OpenGLWindow::update() {
+  const float deltaTime{static_cast<float>(getDeltaTime())};
+
   m_modelMatrix = m_trackBallModel.getRotation();
 
   m_viewMatrix =
       glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f + m_zoom),
                   glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+  // Update Crabs
+  for (const auto index : iter::range(m_numCrabs)) {
+    auto &position{m_crabsPositions.at(index)};
+    auto &rotation{m_crabsRotations.at(index)};
+
+    // Z coordinate increases by 10 units per second
+    position.z += deltaTime * 1.0f;
+
+    // If this crab is behind the camera, select a new random position and
+    // orientation, and move it back to -100
+    if (position.z > 0.1f) {
+      randomizeCrab(position, rotation);
+      position.z = -10.0f;  // Back to -100
+    }
+  }
 }
