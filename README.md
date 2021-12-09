@@ -4,7 +4,7 @@
 ## Atividade 3 - Aplicação gráfica Interariva: Crab World
 :crab:
 
-//TODO colocar GIF
+![](assets/atividade3.gif)
 
 [<h2>Jogo em WebAssembly</h2>](https://sergioppires.github.io/comp-graph-ufabc/apps/crab_world)
 
@@ -16,15 +16,17 @@ Use o mouse para interagir com o caranguejo central.
 
 ### Implementações
 
-<b>Caranguejos</b>: É o personagem principal da aplicação. Ele foi feito a partir de uma composição de dois objetos via blender. Para fazer a composição dos objetos, usamos um modelo .OBJ do caranguejo e do óculos. Dentro do software, atualizamos seu eixo de posição, rotações e escalas para que fosse transmitida uma sensação de que ele estava usando o óculos de sol.
+><b>Caranguejos</b>: É o personagem principal da aplicação. Ele foi feito a partir de uma composição de dois objetos via blender. Para fazer a composição dos objetos, usamos um modelo .OBJ do caranguejo e do óculos. Dentro do software, atualizamos seu eixo de posição, rotações e escalas para que fosse transmitida uma sensação de que ele estava usando o óculos de sol.
 
-//TODO gif do blender
+![](assets/atividade3_blender.gif)
 
-Nele foi aplicado o efeito de [trackball](https://hbatagelo.github.io/cg/vtrackball1.html) dado em aula. Esse efeito consiste em alterar a rotação do objeto de acordo com os cliques do mouse. Também é possível utilizar o scroll para fazer com que a cãmera fique mais perto do objeto ou mais longe.
+>Nele foi aplicado o efeito de [trackball](https://hbatagelo.github.io/cg/vtrackball1.html) dado em aula. Esse efeito consiste em alterar a rotação do objeto de acordo com os cliques do mouse. Também é possível utilizar o scroll para fazer com que a camera fique mais perto do objeto ou mais longe.
 
-<b>Efeito starfield</b>: O efeito starfield foi feito com base no [efeito dado em aula](https://hbatagelo.github.io/cg/starfield.html). Esse efeito cria diversos objetos com uma escala menor que vem de encontro ao observador/camera. Quando os objetos passam um pouco a posição da câmera, eles são transladados até o começo do campo, gerando uma impressão de que estamos gerando infinitos caranguejos. Porém apenas alocamos 100 objetos na memória e atualizamos sua posição de acordo com a necessidade.
+><b>Efeito starfield</b>: O efeito starfield foi feito com base no [efeito dado em aula](https://hbatagelo.github.io/cg/starfield.html). Esse efeito cria diversos objetos com uma escala menor que vem de encontro ao observador/camera. Quando os objetos passam um pouco a posição da câmera, eles são transladados até o começo do campo, gerando uma impressão de que estamos gerando infinitos caranguejos. Porém apenas alocamos 100 objetos na memória e atualizamos sua posição de acordo com a necessidade. O efeito é similar ao usado por mim na atividade 2.
 
-<b>Textura e Iluminação</b>: O efeito de textura e iluminação espelhados foram feitos com base no modelo dado em aula
+><b>Textura e Iluminação / Shaders</b>: O efeito de textura e iluminação espelhados foram feitos com base no modelo dado em aula sobre mepeamento de ambientes, que será visto a seguir. Os principais shaders dessa atividade são o cubereflect e o cubefract, já que eles interagem com o cubemap temático da atividade. Os outros shaders estão no projeto para fins didáticos, visto que não há variação na iluminação no meu projeto.
+
+><b>Cubemap</b>: O efeito cubemap usou de uma mesma implementação do que foi [passado em aula](https://hbatagelo.github.io/cg/envmapping.html). Nele, fazemos um mapeamento de ambiente que simula uma superfície reflexiva. No caso, usamos o mapemento cubico. Cada face do buco representa uma textura diferente, como se fosse faces de um dado. Assim o objeto calcula a distancia do ponto de reflexão até a face do buco e calcula sua reflexão ou refração, dependendo do shader usado.
 
 <p>
 Créditos: </br>
