@@ -286,7 +286,7 @@ void OpenGLWindow::paintUI() {
 
   // Create main window widget
   {
-    auto widgetSize{ImVec2(222, 190)};
+    auto widgetSize{ImVec2(222, 80)};
 
     if (!m_model.isUVMapped()) {
       // Add extra space for static text
@@ -298,39 +298,8 @@ void OpenGLWindow::paintUI() {
     auto flags{ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration};
     ImGui::Begin("Widget window", nullptr, flags);
 
-    // Menu
-    {
-      bool loadModel{};
-      bool loadDiffMap{};
-      bool loadNormalMap{};
-      if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-          ImGui::MenuItem("Load 3D Model...", nullptr, &loadModel);
-          ImGui::MenuItem("Load Diffuse Map...", nullptr, &loadDiffMap);
-          ImGui::MenuItem("Load Normal Map...", nullptr, &loadNormalMap);
-          ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-      }
-      if (loadModel) fileDialogModel.Open();
-      if (loadDiffMap) fileDialogDiffuseMap.Open();
-      if (loadNormalMap) fileDialogNormalMap.Open();
-    }
-
     // Slider will be stretched horizontally
-    ImGui::PushItemWidth(widgetSize.x - 16);
-    ImGui::SliderInt("", &m_trianglesToDraw, 0, m_model.getNumTriangles(),
-                     "%d triangles");
-    ImGui::PopItemWidth();
-
-    static bool faceCulling{};
-    ImGui::Checkbox("Back-face culling", &faceCulling);
-
-    if (faceCulling) {
-      abcg::glEnable(GL_CULL_FACE);
-    } else {
-      abcg::glDisable(GL_CULL_FACE);
-    }
+    abcg::glEnable(GL_CULL_FACE);
 
     // CW/CCW combo box
     { abcg::glFrontFace(GL_CCW); }
@@ -369,63 +338,6 @@ void OpenGLWindow::paintUI() {
     if (!m_model.isUVMapped()) {
       ImGui::TextColored(ImVec4(1, 1, 0, 1), "Mesh has no UV coords.");
     }
-
-    // UV mapping box
-    {
-      std::vector<std::string> comboItems{"Triplanar", "Cylindrical",
-                                          "Spherical"};
-
-      if (m_model.isUVMapped()) comboItems.emplace_back("From mesh");
-
-      ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("UV mapping",
-                            comboItems.at(m_mappingMode).c_str())) {
-        for (auto index : iter::range(comboItems.size())) {
-          const bool isSelected{m_mappingMode == static_cast<int>(index)};
-          if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
-            m_mappingMode = index;
-          if (isSelected) ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-      }
-      ImGui::PopItemWidth();
-    }
-
-    ImGui::End();
-  }
-
-  // Create window for light sources
-  if (m_currentProgramIndex > 1 && m_currentProgramIndex < 6) {
-    const auto widgetSize{ImVec2(222, 244)};
-    ImGui::SetNextWindowPos(ImVec2(m_viewportWidth - widgetSize.x - 5,
-                                   m_viewportHeight - widgetSize.y - 5));
-    ImGui::SetNextWindowSize(widgetSize);
-    ImGui::Begin(" ", nullptr, ImGuiWindowFlags_NoDecoration);
-
-    ImGui::Text("Light properties");
-
-    // Slider to control light properties
-    ImGui::PushItemWidth(widgetSize.x - 36);
-    ImGui::ColorEdit3("Ia", &m_Ia.x, ImGuiColorEditFlags_Float);
-    ImGui::ColorEdit3("Id", &m_Id.x, ImGuiColorEditFlags_Float);
-    ImGui::ColorEdit3("Is", &m_Is.x, ImGuiColorEditFlags_Float);
-    ImGui::PopItemWidth();
-
-    ImGui::Spacing();
-
-    ImGui::Text("Material properties");
-
-    // Slider to control material properties
-    ImGui::PushItemWidth(widgetSize.x - 36);
-    ImGui::ColorEdit3("Ka", &m_Ka.x, ImGuiColorEditFlags_Float);
-    ImGui::ColorEdit3("Kd", &m_Kd.x, ImGuiColorEditFlags_Float);
-    ImGui::ColorEdit3("Ks", &m_Ks.x, ImGuiColorEditFlags_Float);
-    ImGui::PopItemWidth();
-
-    // Slider to control the specular shininess
-    ImGui::PushItemWidth(widgetSize.x - 16);
-    ImGui::SliderFloat("", &m_shininess, 0.0f, 500.0f, "shininess: %.1f");
-    ImGui::PopItemWidth();
 
     ImGui::End();
   }
