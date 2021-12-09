@@ -333,58 +333,14 @@ void OpenGLWindow::paintUI() {
     }
 
     // CW/CCW combo box
-    {
-      static std::size_t currentIndex{};
-      std::vector<std::string> comboItems{"CCW", "CW"};
-
-      ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("Front face",
-                            comboItems.at(currentIndex).c_str())) {
-        for (auto index : iter::range(comboItems.size())) {
-          const bool isSelected{currentIndex == index};
-          if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
-            currentIndex = index;
-          if (isSelected) ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-      }
-      ImGui::PopItemWidth();
-
-      if (currentIndex == 0) {
-        abcg::glFrontFace(GL_CCW);
-      } else {
-        abcg::glFrontFace(GL_CW);
-      }
-    }
+    { abcg::glFrontFace(GL_CCW); }
 
     // Projection combo box
     {
-      static std::size_t currentIndex{};
-      std::vector<std::string> comboItems{"Perspective", "Orthographic"};
-
-      ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("Projection",
-                            comboItems.at(currentIndex).c_str())) {
-        for (auto index : iter::range(comboItems.size())) {
-          const bool isSelected{currentIndex == index};
-          if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected))
-            currentIndex = index;
-          if (isSelected) ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-      }
-      ImGui::PopItemWidth();
-
       const auto aspect{static_cast<float>(m_viewportWidth) /
                         static_cast<float>(m_viewportHeight)};
-      if (currentIndex == 0) {
-        m_projMatrix =
-            glm::perspective(glm::radians(45.0f), aspect, 0.1f, 5.0f);
 
-      } else {
-        m_projMatrix =
-            glm::ortho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, 0.1f, 5.0f);
-      }
+      m_projMatrix = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 5.0f);
     }
 
     // Shader combo box
